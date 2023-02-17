@@ -4,6 +4,7 @@ let nextBtn = document.getElementById("next-button");
 let countOfQuestion = document.querySelector(".number-of-question");
 let displayContainer = document.getElementById("display-container");
 let scoreContainer = document.querySelector(".score-container");
+let restart = document.getElementById("restart");  
 let userScore = document.getElementById("user-score");
 let startScreen = document.querySelector(".start-screen");
 let startButton = document.getElementById("start-button");
@@ -72,10 +73,14 @@ const quizArray = [
         correct: "www.com.yahoo",
     },
 ];
+//Restart Quiz
+restart.addEventListener("click", () => {
+    initial();
+    displayContainer.classList.remove("hide");
+    scoreContainer.classList.add("hide");
+});
 //Next Button
-nextBtn.addEventListener(
-    "click",
-    (displayNext = () => {
+nextBtn.addEventListener("click", (displayNext = () => {
         //increment questionCount
         questionCount += 1;
         //if last question
