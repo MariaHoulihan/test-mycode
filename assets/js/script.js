@@ -1,187 +1,160 @@
-//References
-let quizContainer = document.getElementById("container");
-let nextBtn = document.getElementById("next-button");
-let countOfQuestion = document.querySelector(".number-of-question");
-let displayContainer = document.getElementById("display-container");
-let scoreContainer = document.querySelector(".score-container");
-let restart = document.getElementById("restart");  
-let userScore = document.getElementById("user-score");
-let startScreen = document.querySelector(".start-screen");
-let startButton = document.getElementById("start-button");
-let questionCount;
-let scoreCount = 0;
-let count = 11;
-//Questions and Options array
-const quizArray = [
-    {
-        id: "0",
-        question: "Which is the most widely spoken language in the world?",
-        options: ["Spanish", "Mandarin", "English", "German"],
-        correct: "Mandarin",
-    },
-    {
-        id: "1",
-        question: "Which is the only continent in the world without a desert?",
-        options: ["North America", "Asia", "Africa", "Europe"],
-        correct: "Europe",
-    },
-    {
-        id: "2",
-        question: "Who invented Computer?",
-        options: ["Charles Babbage", "Henry Luce", "Henry Babbage", "Charles Luce"],
-        correct: "Charles Babbage",
-    },
-    {
-        id: "3",
-        question: "What do you call a computer on a network that requests files from another computer?",
-        options: ["A client", "A host", "A router", "A web server"],
-        correct: "A client",
-    },
-    {
-        id: "4",
-        question: "Hardware devices that are not part of the main computer system and are often added later to the system.",
-        options: ["Peripheral", "Clip art", "Highlight", "Execute"],
-        correct: "Peripheral",
-    },
-    {
-        id: "5",
-        question: "The main computer that stores the files that can be sent to computers that are networked together is:",
-        options: ["Clip art", "Mother board", "Peripheral", "File server"],
-        correct: "File server",
-    }, {
-        id: "6",
-        question: "How can you catch a computer virus?",
-        options: ["Sending e-mail messages", "Using a laptop during the winter", "Opening e-mail attachments", "Shopping on-line"],
-        correct: "Opening e-mail attachments",
-    },
-    {
-        id: "7",
-        question: "Google (www.google.com) is a:",
-        options: ["Search Engine", "Number in Math", "Directory of images", "Chat service on the web"],
-        correct: "Search Engine",
-    },
-    {
-        id: "8",
-        question: "Which is not an Internet protocol?",
-        options: ["HTTP", "FTP", "STP", "IP"],
-        correct: "STP",
-    },
-    {
-        id: "9",
-        question: "Which of the following is not a valid domain name?",
-        options: ["www.yahoo.com", "www.yahoo.co.uk", "www.com.yahoo", "www.yahoo.co.in"],
-        correct: "www.com.yahoo",
-    },
-];
-//Restart Quiz
-restart.addEventListener("click", () => {
-    initial();
-    displayContainer.classList.remove("hide");
-    scoreContainer.classList.add("hide");
-});
-//Next Button
-nextBtn.addEventListener("click", (displayNext = () => {
-        //increment questionCount
-        questionCount += 1;
-        //if last question
-        if (questionCount == quizArray.length) {
-            //hide question container and display score
-            displayContainer.classList.add("hide");
-            scoreContainer.classList.remove("hide");
-            //user score
-            userScore.innerHTML =
-                "Your score is " + scoreCount + " out of " + questionCount;
-        } else {
-            //display questionCount
-            countOfQuestion.innerHTML =
-                questionCount + 1 + " of " + quizArray.length + " Question";
-            //display quiz
-            quizDisplay(questionCount);
-            count = 11;
-        }
-    })
-);
+const startButton = document.getElementById('start-btn')
+const nextButton = document.getElementById('next-btn')
+const questionContainerElement = document.getElementById('question-container')
+const questionElement = document.getElementById('question')
+const answerButtonsElement = document.getElementById('answer-buttons')
 
-//Display quiz
-const quizDisplay = (questionCount) => {
-    let quizCards = document.querySelectorAll(".container-mid");
-    //Hide other cards
-    quizCards.forEach((card) => {
-        card.classList.add("hide");
-    });
-    //display current question card
-    quizCards[questionCount].classList.remove("hide");
-};
-//Quiz Creation
-function quizCreator() {
-    //randomly sort questions
-    quizArray.sort(() => Math.random() - 0.5);
-    //generate quiz
-    for (let i of quizArray) {
-        //randomly sort options
-        i.options.sort(() => Math.random() - 0.5);
-        //quiz card creation
-        let div = document.createElement("div");
-        div.classList.add("container-mid", "hide");
-        //question number
-        countOfQuestion.innerHTML = 1 + " of " + quizArray.length + " Question";
-        //question
-        let question_DIV = document.createElement("p");
-        question_DIV.classList.add("question");
-        question_DIV.innerHTML = i.question;
-        div.appendChild(question_DIV);
-        //options
-        div.innerHTML += `
-    <button class="option-div" onclick="checker(this)">${i.options[0]}</button>
-     <button class="option-div" onclick="checker(this)">${i.options[1]}</button>
-      <button class="option-div" onclick="checker(this)">${i.options[2]}</button>
-       <button class="option-div" onclick="checker(this)">${i.options[3]}</button>
-    `;
-        quizContainer.appendChild(div);
-    }
-}
-//Checker Function to check if option is correct or not
-function checker(userOption) {
-    let userSolution = userOption.innerText;
-    let question =
-        document.getElementsByClassName("container-mid")[questionCount];
-    let options = question.querySelectorAll(".option-div");
-    //if user clicked answer == correct option stored in object
-    if (userSolution === quizArray[questionCount].correct) {
-        userOption.classList.add("correct");
-        scoreCount++;
-    } else {
-        userOption.classList.add("incorrect");
-        //For marking the correct option
-        options.forEach((element) => {
-            if (element.innerText == quizArray[questionCount].correct) {
-                element.classList.add("correct");
-            }
-        });
-    }
+let shuffledQuestions, currentQuestionIndex
 
-    //disable all options
-    options.forEach((element) => {
-        element.disabled = true;
-    });
+startButton.addEventListener('click', startGame)
+nextButton.addEventListener('click', () => {
+  currentQuestionIndex++
+  setNextQuestion()
+})
+
+function startGame() {
+  startButton.classList.add('hide')
+  shuffledQuestions = questions.sort(() => Math.random() - .5)
+  currentQuestionIndex = 0
+  questionContainerElement.classList.remove('hide')
+  setNextQuestion()
 }
-//initial setup
-function initial() {
-    quizContainer.innerHTML = "";
-    questionCount = 0;
-    scoreCount = 0;
-    count = 11;
-    quizCreator();
-    quizDisplay(questionCount);
+
+function setNextQuestion() {
+  resetState()
+  showQuestion(shuffledQuestions[currentQuestionIndex])
 }
-//when user click on start button
-startButton.addEventListener("click", () => {
-    startScreen.classList.add("hide");
-    displayContainer.classList.remove("hide");
-    initial();
-});
-//hide quiz and display start screen
-window.onload = () => {
-    startScreen.classList.remove("hide");
-    displayContainer.classList.add("hide");
-};
+
+function showQuestion(question) {
+  questionElement.innerText = question.question
+  question.answers.forEach(answer => {
+    const button = document.createElement('button')
+    button.innerText = answer.text
+    button.classList.add('btn')
+    if (answer.correct) {
+      button.dataset.correct = answer.correct
+    }
+    button.addEventListener('click', selectAnswer)
+    answerButtonsElement.appendChild(button)
+  })
+}
+
+function resetState() {
+  clearStatusClass(document.body)
+  nextButton.classList.add('hide')
+  while (answerButtonsElement.firstChild) {
+    answerButtonsElement.removeChild(answerButtonsElement.firstChild)
+  }
+}
+
+function selectAnswer(e) {
+  const selectedButton = e.target
+  const correct = selectedButton.dataset.correct
+  setStatusClass(document.body, correct)
+  Array.from(answerButtonsElement.children).forEach(button => {
+    setStatusClass(button, button.dataset.correct)
+  })
+  if (shuffledQuestions.length > currentQuestionIndex + 1) {
+    nextButton.classList.remove('hide')
+  } else {
+    startButton.innerText = 'Restart'
+    startButton.classList.remove('hide')
+  }
+}
+
+function setStatusClass(element, correct) {
+  clearStatusClass(element)
+  if (correct) {
+    element.classList.add('correct')
+  } else {
+    element.classList.add('wrong')
+  }
+}
+
+function clearStatusClass(element) {
+  element.classList.remove('correct')
+  element.classList.remove('wrong')
+}
+
+const questions = [
+    { 
+      question: 'The occipital area of the skull is located in what part of the skull?',
+    answers: [
+      { text: 'Front', correct: false },
+      { text: 'Back', correct: true },
+      { text: 'Top', correct: false }
+      ]
+  },
+  {
+    question: 'The biceps femoris muscle is located in what part of the body?',
+    answers: [
+      { text: 'Shoulder', correct: false },
+      { text: 'Arm', correct: false },
+      { text: 'Leg', correct: true }
+    ]
+  },    
+    {
+      question: 'The elbow is an example of what type of joint?',
+      answers: [
+      { text: 'Pivot', correct: false },
+      { text: 'Hinge', correct: true },
+      { text: 'Saddle', correct: false }
+    ]
+  }, 
+      {question: 'The muscles located at the front of the thigh are known as what?',
+      answers: [
+        { text: 'Adductors', correct: false}, 
+        { text: 'Hamstrings', correct: false}, 
+        { text: 'Quadriceps', correct: true}
+      ]
+     },
+     {
+      question: 'The C1 vertebra is called?',
+      
+        answers: [
+      { text: 'Atlas', correct: true },
+      { text: 'Axis', correct: false },
+      { text: 'Amino', correct: false }
+      ]
+          }, 
+     {
+      question: 'The three bones that form the ankle are the fibula, tibia and which other bone?',
+      answers: [
+        { text: 'Talus', correct: true },
+        { text: 'Calcaneous', correct: false },
+        { text: 'Cuboid', correct: false }
+      ]
+     },
+     {
+       question: 'Which vessel returns unoxygenated blood to the lungs?',
+       answers: [
+         { text: 'Aorta', correct: false },
+         { text: 'Pulmonary artery', correct: true },
+         {text: 'Pulmonary vein', correct: false }
+    ]
+     }, 
+    {
+      question: 'Ligaments and Tendons are composed of what type of tissue?',
+        answers: [
+          { text: 'Epithelial', correct: false }, 
+          { text: 'Adipose', correct: false },
+          { text: 'Connective', correct: true }
+      ]
+      },
+    {
+      question: 'The anatomical term for the head is?',
+      answers: [
+        { text: 'Cephalic', correct: true },
+        { text: 'Cervical', correct: false },
+        { text: 'Thoracic', correct: false }
+      ]
+       }, 
+    {
+      question: 'Mastication is the term for what?',
+      answers: [
+        { text: 'Chewing', correct: true },
+        { text: 'Snoring', correct: false },
+        { text: 'Swallowing', correct: false }
+      ]
+        }  
+      ];
